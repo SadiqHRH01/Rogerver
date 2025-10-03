@@ -1,57 +1,96 @@
 import { QRCodeCanvas } from "qrcode.react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 export default function DonateSection() {
   const [selected, setSelected] = useState("bch");
 
-  // Replace these with your actual wallet addresses
   const addresses: Record<string, string> = {
-    bch: "bitcoincash:qzre78u72e2x6qgux9y7zcayrxuwclktfs7mmamxk2",
-    zano: "zano:Zx123exampleaddress",
-    fusd: "fusd:FUSD123exampleaddress",
-    btc: "bitcoin:1ABCexampleaddress",
+    bch: "bitcoincash:qramt3n0wag6l0an0tgyncyshqr470629guveqy8pw",
+    btc: "bitcoin:1HUiSpfmwY5qLtRGu3k1HTQzj3E8HB8Pz8",
+    zano:
+      "ZxCBnMrBFBR8y211uuyk1D5SxbyuwGMfoTWtRf314CnNeT2FAGjbA1S9eaRjKsN2NKaz82hP3DSX1VbXxxGLLQYA15MscqcQM",
+    fusd:
+      "ZxCBnMrBFBR8y211uuyk1D5SxbyuwGMfoTWtRf314CnNeT2FAGjbA1S9eaRjKsN2NKaz82hP3DSX1VbXxxGLLQYA15MscqcQM",
   };
 
   const cryptos = [
     { id: "bch", label: "Bitcoin Cash (BCH)" },
     { id: "zano", label: "Zano (ZANO)" },
-    { id: "fusd", label: "FlexUSD (FUSD)" },
+    { id: "fusd", label: "FUSD" },
     { id: "btc", label: "Bitcoin (BTC)" },
   ];
 
   const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
+    "idle",
+  );
+
+  useEffect(() => {
+    setCopyStatus("idle");
+  }, [selected]);
+
+  const handleCopy = async () => {
+    const address = addresses[selected];
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(address);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = address;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      setCopyStatus("copied");
+    } catch (error) {
+      console.error("Failed to copy address", error);
+      setCopyStatus("error");
+    }
+  };
+
+  const handleNewsletterSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setNewsletterEmail("");
+  };
+
+  const selectedCrypto = cryptos.find((crypto) => crypto.id === selected);
 
   return (
     <section id="donate-now" className="container mx-auto px-6 py-16">
       <div className="grid md:grid-cols-2 gap-10">
-        {/* Donate */}
         <div className="p-8 bg-white rounded-3xl shadow-xl border border-slate-100">
           <h4 className="font-bold text-lg text-emerald-700">
-            Donate With Bitcoin Cash
+            Donate With {selectedCrypto?.label ?? "Bitcoin Cash (BCH)"}
           </h4>
           <p className="mt-3 text-slate-600 leading-relaxed">
-            Support our mission by donating with your preferred cryptocurrency:
-            <strong> BCH, Zano, FUSD, or BTC</strong>.
+            Support our mission with your preferred cryptocurrency. Every
+            contribution directly funds grassroots humanitarian and legacy
+            preservation projects.
           </p>
 
-          {/* Crypto Options */}
           <div className="mt-6 flex flex-wrap gap-3">
-            {cryptos.map((c) => (
+            {cryptos.map((crypto) => (
               <button
-                key={c.id}
-                onClick={() => setSelected(c.id)}
+                key={crypto.id}
+                onClick={() => setSelected(crypto.id)}
                 className={`px-4 py-2 rounded-xl text-sm font-medium shadow transition ${
-                  selected === c.id
+                  selected === crypto.id
                     ? "bg-emerald-600 text-white"
                     : "bg-gray-100 hover:bg-gray-200 text-slate-700"
                 }`}
+                type="button"
               >
-                {c.label}
+                {crypto.label}
               </button>
             ))}
           </div>
 
-          {/* QR Code */}
           <div className="mt-8 flex flex-col items-center gap-4">
             <QRCodeCanvas
               value={addresses[selected]}
@@ -61,23 +100,35 @@ export default function DonateSection() {
             <p className="text-sm font-mono text-slate-600 break-all text-center">
               {addresses[selected]}
             </p>
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-semibold shadow hover:bg-emerald-700 transition"
+            >
+              {copyStatus === "copied"
+                ? "Copied to clipboard"
+                : copyStatus === "error"
+                ? "Copy failed. Try again"
+                : "Copy address"}
+            </button>
+            {copyStatus === "error" && (
+              <p className="text-xs text-red-500">
+                Your browser may not support automatic copying. Please copy the
+                address manually.
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Newsletter */}
         <div className="p-8 bg-white rounded-3xl shadow-xl border border-slate-100">
-          <h4 className="font-bold text-lg text-emerald-700">
-            Join Our Newsletter
-          </h4>
+          <h4 className="font-bold text-lg text-emerald-700">Stay Connected</h4>
           <p className="mt-3 text-slate-600 leading-relaxed">
-            Stay updated on legacy projects, humanitarian efforts, and ways to
-            get involved. Subscribe to our newsletter.
+            Subscribe for updates on new field reports, community projects, and
+            upcoming donation campaigns.
           </p>
           <form
             className="mt-5 flex flex-col gap-4"
-            onSubmit={(e) => {
-              e.preventDefault(); // Prevent default form submission
-            }}
+            onSubmit={handleNewsletterSubmit}
           >
             <input
               type="email"
@@ -85,7 +136,7 @@ export default function DonateSection() {
               className="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none"
               placeholder="Enter your email"
               value={newsletterEmail}
-              onChange={(e) => setNewsletterEmail(e.target.value)}
+              onChange={(event) => setNewsletterEmail(event.target.value)}
             />
             <button
               type="submit"
