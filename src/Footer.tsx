@@ -1,4 +1,10 @@
-import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import {
+  Mail,
+  Link as LinkIcon,
+  Info,
+  ShieldAlert,
+  HeartHandshake,
+} from "lucide-react";
 
 type FooterProps = {
   setPage: (
@@ -9,55 +15,23 @@ type FooterProps = {
 
 export default function Footer({ setPage }: FooterProps) {
   return (
-    <footer className="mt-20 border-t py-12 bg-white/80 backdrop-blur">
-      <div className="container mx-auto px-6 grid md:grid-cols-3 gap-12">
+    <footer className="mt-20 border-t py-16 bg-slate-50/80 backdrop-blur">
+      <div className="container mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-12 text-slate-700">
         {/* Contact */}
         <div>
-          <h4 className="font-bold text-lg text-slate-800">Contact</h4>
-          <p className="text-sm text-slate-600 mt-3">
-            Email: hello@rvp-tribute.org
-          </p>
-
-          {/* Social Media Links */}
-          <div className="flex items-center space-x-4 mt-4">
-            <a
-              href="https://twitter.com/YourHandle"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-600 hover:text-emerald-600 transition"
-            >
-              <Twitter size={20} />
-            </a>
-            <a
-              href="https://facebook.com/YourPage"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-600 hover:text-emerald-600 transition"
-            >
-              <Facebook size={20} />
-            </a>
-            <a
-              href="https://instagram.com/YourPage"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-600 hover:text-emerald-600 transition"
-            >
-              <Instagram size={20} />
-            </a>
-            <a
-              href="https://youtube.com/YourChannel"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-600 hover:text-emerald-600 transition"
-            >
-              <Youtube size={20} />
-            </a>
-          </div>
+          <h4 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+            <Mail size={20} className="text-emerald-600" />
+            Contact
+          </h4>
+          <p className="text-sm mt-3">Support@rvptribute.org</p>
         </div>
 
         {/* Quick Links */}
         <div>
-          <h4 className="font-bold text-lg text-slate-800">Quick Links</h4>
+          <h4 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+            <LinkIcon size={20} className="text-emerald-600" />
+            Quick Links
+          </h4>
           <ul className="mt-3 space-y-2 text-sm text-slate-600">
             <li>
               <button
@@ -86,12 +60,47 @@ export default function Footer({ setPage }: FooterProps) {
           </ul>
         </div>
 
+        {/* Free Roger Ver Link (Mobile) */}
+        <div className="lg:hidden">
+          <h4 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+            <HeartHandshake size={20} className="text-emerald-600" />
+            Advocacy
+          </h4>
+          <a
+            href="https://www.freerogernow.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm mt-3 block hover:text-emerald-600 transition font-medium"
+          >
+            Free Roger Now
+          </a>
+        </div>
+
         {/* Disclaimer */}
         <div>
-          <h4 className="font-bold text-lg text-slate-800">Disclaimer</h4>
+          <h4 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+            <ShieldAlert size={20} className="text-emerald-600" />
+            Disclaimer
+          </h4>
           <p className="text-sm text-slate-600 mt-3 leading-relaxed">
             This is a tribute platform, not officially managed by Roger Ver.
           </p>
+        </div>
+
+        {/* Free Roger Ver Link (Desktop) */}
+        <div className="hidden lg:flex flex-col items-start justify-start">
+          <h4 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+            <HeartHandshake size={20} className="text-emerald-600" />
+            Advocacy
+          </h4>
+          <a
+            href="https://www.freerogernow.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-block px-5 py-2.5 bg-emerald-600 text-white rounded-lg font-semibold shadow hover:bg-emerald-700 transition text-sm"
+          >
+            Free Roger Now
+          </a>
         </div>
       </div>
     </footer>
